@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kickstart</title>
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* while the shoe is being read from the database */
+        #prodetails .loading,
+        #prodetails .notfound {
+            width: 100%;
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        #stock-note {
+            margin: 8px 0;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+
+<body id ="body">
+    
+    <section id="header" class="section-p1">
+        <a href="index.html">  <img src="images/logonobg.png" class="logo" alt="" height="40" width="50" > </a>
+
+        <div>
+            <ul id="navbar">
+                 <li><a href="index.html">Home</a></li>
+                <li><a class="active" href="shop.html">Shop</a></li>
+                <li><a href="blog.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="cart.html"><i class="fa-solid fa-cart-shopping"></i></a></li>
+                <li><a href="login.html" id="account-link" title="Log in"><i class="fa-solid fa-user"></i></a></li>
+            </ul>
+        </div>
+
+    </section>
+
+     <section id="prodetails" class="section-p1">
+        <p class="loading">Loading...</p>
+     </section>
+        
+      <section id="newarrival" class="new">
+        
+        <h1>    FEATURED PRODUCTS    </h1>
+        <h2>NEW ARRIVALS </h2>
+        <br>
+        <br>
+    
+        <div class="newarrivalsec" id="related"></div>
+
+        <br>
+        <br>
+        <br>
+     </section>
+
+  <footer class="foot">
+    <div class="col">
+      <img src="images/logonobg.png" alt="LOGO" height="60">
+      <h4>CONTACT</h4>
+      <p><strong>ADDRESS:</strong> 363 P. Casal, Quiapo, Manila</p>
+      <p><strong>PHONE:</strong> +63 9189296950</p>
+      <p><strong>HOURS:</strong> 10:00 - 18:00, MON - SAT</p>
+      <div class="follow">
+        <h4><strong>Follow us on Instagram:</strong></h4>
+        <img src="images/qrnobg.png" alt="qr" height="100" width="100">
+      </div>
+    </div>
+
+    <div class="col">
+      <h4>ABOUT</h4>
+      <a href="blog.html" >About us</a>
+      <a href="blog.html">Privacy Policy</a>
+      <a href="blog.html">Terms and Conditions</a>
+      <a href="contact.html">Contact us</a>
+    </div>
+
+    <div class="copyright">
+      <p>© 2025, Kickstart - Dan Axel M. Tongol - T.I.PMNL</p>
+    </div>
+  </footer>
+
+    <!-- Firebase (accounts + database) -->
+    <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+    <script src="products.js"></script>
+    <script src="product.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

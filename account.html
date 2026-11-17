@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kickstart | My account</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="auth.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body id="body">
+
+  <section id="header" class="section-p1">
+    <a href="index.html"><img src="images/logonobg.png" class="logo" alt="" height="40" width="50"></a>
+    <div>
+      <ul id="navbar">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="blog.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="cart.html"><i class="fa-solid fa-cart-shopping"></i></a></li>
+        <li><a class="active" href="login.html" id="account-link" title="Log in"><i class="fa-solid fa-user"></i></a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="ks-banner">
+    <h1>My <i>Account</i></h1>
+    <p>Details | Orders | Security</p>
+  </section>
+
+  <section id="auth-section">
+    <div class="account-layout">
+
+      <!-- left side: who is logged in + menu -->
+      <aside class="account-side">
+        <div class="avatar" id="avatar">K</div>
+        <h2 id="info-name">Loading...</h2>
+        <p class="side-email" id="info-email"></p>
+        <p id="info-verified"></p>
+
+        <ul class="account-menu">
+          <li><button type="button" data-panel="details" class="active"><i class="fa-solid fa-user"></i> My Details</button></li>
+          <li><button type="button" data-panel="orders"><i class="fa-solid fa-box"></i> My Orders</button></li>
+          <li><button type="button" data-panel="security"><i class="fa-solid fa-lock"></i> Security</button></li>
+          <li id="admin-item" style="display:none;"><button type="button" onclick="window.location.href='admin.html'"><i class="fa-solid fa-gauge-high"></i> Store Admin</button></li>
+          <li><button type="button" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Log Out</button></li>
+        </ul>
+      </aside>
+
+      <!-- right side: one panel shows at a time -->
+      <div class="account-main">
+
+        <!-- ================= My Details ================= -->
+        <div class="panel active" id="panel-details">
+          <h2 class="panel-title">My Details</h2>
+
+          <div class="stats">
+            <a class="stat" href="cart.html"><strong id="stat-cart">-</strong><span>in your cart</span></a>
+            <button type="button" class="stat" id="stat-orders-btn"><strong id="stat-orders">-</strong><span>orders placed</span></button>
+          </div>
+
+          <form class="auth-card" id="profile-form">
+            <h3>Delivery Details</h3>
+            <p class="auth-note">These fill in automatically when you check out.</p>
+
+            <label for="name">Full name</label>
+            <input type="text" id="name" autocomplete="name" required>
+
+            <label for="address">Delivery address</label>
+            <input type="text" id="address" autocomplete="street-address" placeholder="House no., street, barangay, city">
+
+            <label for="contact">Contact number</label>
+            <input type="tel" id="contact" autocomplete="tel" placeholder="09XXXXXXXXX">
+
+            <button type="submit" class="ks-btn" id="profile-btn">Save Details</button>
+            <div id="profile-msg" class="auth-msg"></div>
+          </form>
+        </div>
+
+        <!-- ================= My Orders ================= -->
+        <div class="panel" id="panel-orders">
+          <h2 class="panel-title">My Orders</h2>
+          <div id="orders"><p class="auth-note">Loading...</p></div>
+        </div>
+
+        <!-- ================= Security ================= -->
+        <div class="panel" id="panel-security">
+          <h2 class="panel-title">Security</h2>
+
+          <div class="auth-card" id="verify-card">
+            <h3>Email Verification</h3>
+            <p class="auth-note" id="verify-text"></p>
+            <button type="button" class="ks-btn grey" id="resend-btn" style="display:none;">Resend Verification Email</button>
+            <div id="verify-msg" class="auth-msg"></div>
+          </div>
+
+          <form class="auth-card" id="password-form">
+            <h3>Change Password</h3>
+
+            <label for="current-password">Current password</label>
+            <input type="password" id="current-password" class="pass" autocomplete="current-password" required>
+
+            <div class="two-col">
+              <div>
+                <label for="new-password">New password</label>
+                <input type="password" id="new-password" class="pass" autocomplete="new-password" minlength="8" required>
+              </div>
+              <div>
+                <label for="confirm-password">Confirm new password</label>
+                <input type="password" id="confirm-password" class="pass" autocomplete="new-password" required>
+              </div>
+            </div>
+            <p class="auth-note">At least 8 characters.</p>
+
+            <label class="show-pass"><input type="checkbox" id="show-pass"> Show passwords</label>
+
+            <button type="submit" class="ks-btn" id="password-btn">Update Password</button>
+            <div id="password-msg" class="auth-msg"></div>
+          </form>
+
+          <form class="auth-card" id="email-form">
+            <h3>Change Email</h3>
+            <p class="auth-note">We send a confirmation link to the new address. Your email changes after you click it.</p>
+
+            <label for="new-email">New email</label>
+            <input type="email" id="new-email" autocomplete="email" required>
+
+            <label for="email-password">Current password</label>
+            <input type="password" id="email-password" autocomplete="current-password" required>
+
+            <button type="submit" class="ks-btn" id="email-btn">Send Confirmation Link</button>
+            <div id="email-msg" class="auth-msg"></div>
+          </form>
+
+          <form class="auth-card" id="delete-form">
+            <h3>Delete Account</h3>
+            <p class="auth-note">This permanently removes your account, your saved cart and your order history.</p>
+
+            <label for="delete-password">Type your password to confirm</label>
+            <input type="password" id="delete-password" autocomplete="current-password" required>
+
+            <button type="submit" class="ks-btn danger" id="delete-btn">Delete My Account</button>
+            <div id="delete-msg" class="auth-msg"></div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="col">
+      <img src="images/logonobg.png" alt="LOGO" height="60">
+      <h4>CONTACT</h4>
+      <p><strong>ADDRESS:</strong> 363 P. Casal, Quiapo, Manila</p>
+      <p><strong>PHONE:</strong> +63 9189296950</p>
+      <p><strong>HOURS:</strong> 10:00 - 18:00, MON - SAT</p>
+      <div class="follow">
+        <h4><strong>Follow us on Instagram:</strong></h4>
+        <img src="images/qrnobg.png" alt="qr" height="100" width="100">
+      </div>
+    </div>
+
+    <div class="col">
+      <h4>ABOUT</h4>
+      <a href="blog.html" >About us</a>
+      <a href="blog.html">Privacy Policy</a>
+      <a href="blog.html">Terms and Conditions</a>
+      <a href="contact.html">Contact us</a>
+    </div>
+
+    <div class="copyright">
+      <p>© 2025, Kickstart - Dan Axel M. Tongol - T.I.PMNL</p>
+    </div>
+  </footer>
+
+  <!-- Firebase (accounts + database) -->
+  <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="auth.js"></script>
+  <script>
+    function showMessage(id, text, type) {
+      const box = document.getElementById(id);
+      box.textContent = text;
+      box.className = 'auth-msg ' + type;
+    }
+    // "Show password" checkbox
+    document.getElementById('show-pass').addEventListener('change', (e) => {
+      document.querySelectorAll('.pass').forEach((input) => {
+        input.type = e.target.checked ? 'text' : 'password';
+      });
+    });
+
+    // ---------- menu: show one panel at a time ----------
+    const PANELS = ['details', 'orders', 'security'];
+
+    function showPanel(name) {
+      if (!PANELS.includes(name)) name = 'details';
+      PANELS.forEach((p) => {
+        document.getElementById('panel-' + p).classList.toggle('active', p === name);
+      });
+      document.querySelectorAll('.account-menu button[data-panel]').forEach((button) => {
+        button.classList.toggle('active', button.dataset.panel === name);
+      });
+      history.replaceState(null, '', '#' + name);
+    }
+
+    document.querySelectorAll('.account-menu button[data-panel]').forEach((button) => {
+      button.addEventListener('click', () => showPanel(button.dataset.panel));
+    });
+    document.getElementById('stat-orders-btn').addEventListener('click', () => showPanel('orders'));
+
+    // account.html#orders opens straight on the orders panel
+    showPanel(location.hash.replace('#', ''));
+
+    // ---------- who is logged in ----------
+    function showName(name) {
+      const shown = name || 'Kickstart Member';
+      document.getElementById('info-name').textContent = shown;
+      document.getElementById('avatar').textContent = shown.trim().charAt(0).toUpperCase();
+    }
+
+    KS.ready.then(async (user) => {
+      if (!user) {                       // this page is for logged-in users only
+        location.replace('login.html');
+        return;
+      }
+
+      showName(user.displayName);
+      document.getElementById('info-email').textContent = user.email;
+
+      if (user.emailVerified) {
+        document.getElementById('info-verified').innerHTML = '<span class="badge ok">Email verified</span>';
+        document.getElementById('verify-text').textContent = 'Your email address is verified.';
+      } else {
+        document.getElementById('info-verified').innerHTML = '<span class="badge warn">Email not verified yet</span>';
+        document.getElementById('verify-text').textContent =
+          'We sent a verification link to ' + user.email + '. Click it to verify your email.';
+        document.getElementById('resend-btn').style.display = 'inline-block';
+      }
+
+      try {
+        const profile = await KS.getProfile();
+        document.getElementById('name').value = profile.name;
+        document.getElementById('address').value = profile.address;
+        document.getElementById('contact').value = profile.contact;
+      } catch (error) {
+        showMessage('profile-msg', KS.friendlyError(error), 'error');
+      }
+
+      // the Store Admin link only appears for the owner
+      KS.isAdmin().then((yes) => {
+        if (yes) document.getElementById('admin-item').style.display = 'block';
+      });
+
+      loadCartCount();
+      loadOrders();
+    });
+
+    async function loadCartCount() {
+      try {
+        const cart = await KS.getCart();
+        const pairs = cart.reduce((sum, item) => sum + item.qty, 0);
+        document.getElementById('stat-cart').textContent = pairs;
+      } catch (error) {
+        document.getElementById('stat-cart').textContent = '0';
+      }
+    }
+
+    // ---------- order history ----------
+    async function loadOrders() {
+      const box = document.getElementById('orders');
+      try {
+        const orders = await KS.getOrders();
+        document.getElementById('stat-orders').textContent = orders.length;
+
+        if (orders.length === 0) {
+          box.innerHTML = '<div class="empty-box"><p>You have not placed any orders yet.</p>' +
+                          '<a class="ks-btn" href="shop.html">Shop Now</a></div>';
+          return;
+        }
+
+        box.innerHTML = orders.map((order) => {
+          const date = new Date(order.createdAt).toLocaleDateString('en-PH', {
+            year: 'numeric', month: 'short', day: 'numeric'
+          });
+          const items = (order.items || []).map((item) => {
+            const qty = item.qty || 1;
+            return '<div class="order-item">' +
+                     '<img src="' + KS.escapeHtml(item.image || 'images/logonobg.png') + '" alt="">' +
+                     '<div class="oi-name">' + KS.escapeHtml(item.name) +
+                       '<small>Size: ' + KS.escapeHtml(item.size) + ' | Qty: ' + qty + '</small></div>' +
+                     '<div>' + KS.formatPeso((item.price || 0) * qty) + '</div>' +
+                   '</div>';
+          }).join('');
+
+          return '<div class="order">' +
+                   '<div class="order-head">' +
+                     '<div><span class="order-no">' + KS.escapeHtml(order.orderNumber || 'Order') + '</span><br>' +
+                       '<span class="order-date">' + date + '</span></div>' +
+                     '<span class="badge orange">' + KS.escapeHtml(order.status || 'Processing') + '</span>' +
+                   '</div>' +
+                   items +
+                   '<div class="order-foot">' +
+                     '<div>Deliver to: ' + KS.escapeHtml(order.name || '') + '<br>' +
+                       KS.escapeHtml(order.address || '') + '<br>' +
+                       'Payment: ' + KS.escapeHtml(order.payment || 'Cash on Delivery') + '</div>' +
+                     '<div class="order-total">' +
+                       (order.discount ? '<small style="font-weight:normal;color:#666;">Voucher -' + KS.formatPeso(order.discount) + '</small><br>' : '') +
+                       'Total ' + KS.formatPeso(order.total) + '</div>' +
+                   '</div>' +
+                 '</div>';
+        }).join('');
+      } catch (error) {
+        document.getElementById('stat-orders').textContent = '0';
+        box.innerHTML = '<p class="auth-note">' + KS.escapeHtml(KS.friendlyError(error)) + '</p>';
+      }
+    }
+
+    // ---------- log out ----------
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      await KS.signOut();
+      location.href = 'index.html';
+    });
+
+    // ---------- save details ----------
+    document.getElementById('profile-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const button = document.getElementById('profile-btn');
+      const name = document.getElementById('name').value.trim();
+      const contact = document.getElementById('contact').value.replace(/[\s-]/g, '');
+
+      if (!name) { showMessage('profile-msg', 'Please enter your name.', 'error'); return; }
+      if (contact && !/^(09|\+639)\d{9}$/.test(contact)) {
+        showMessage('profile-msg', 'Contact number should look like 09XXXXXXXXX.', 'error');
+        return;
+      }
+
+      button.disabled = true;
+      try {
+        await KS.saveProfile({
+          name: name,
+          address: document.getElementById('address').value.trim(),
+          contact: contact
+        });
+        showName(name);
+        showMessage('profile-msg', 'Details saved.', 'success');
+      } catch (error) {
+        showMessage('profile-msg', KS.friendlyError(error), 'error');
+      }
+      button.disabled = false;
+    });
+
+    // ---------- resend verification email ----------
+    document.getElementById('resend-btn').addEventListener('click', async () => {
+      try {
+        await KS.resendVerification();
+        showMessage('verify-msg', 'Verification email sent. Check your inbox and spam folder.', 'success');
+      } catch (error) {
+        showMessage('verify-msg', KS.friendlyError(error), 'error');
+      }
+    });
+
+    // ---------- change password ----------
+    document.getElementById('password-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const button = document.getElementById('password-btn');
+      const current = document.getElementById('current-password').value;
+      const next = document.getElementById('new-password').value;
+      const confirm = document.getElementById('confirm-password').value;
+
+      if (next.length < 8) { showMessage('password-msg', 'New password must be at least 8 characters.', 'error'); return; }
+      if (next !== confirm) { showMessage('password-msg', 'The two new passwords do not match.', 'error'); return; }
+      if (next === current) { showMessage('password-msg', 'New password must be different from the current one.', 'error'); return; }
+
+      button.disabled = true;
+      try {
+        await KS.changePassword(current, next);
+        e.target.reset();
+        showMessage('password-msg', 'Password updated.', 'success');
+      } catch (error) {
+        showMessage('password-msg',
+          KS.isWrongPassword(error) ? 'Current password is wrong.' : KS.friendlyError(error), 'error');
+      }
+      button.disabled = false;
+    });
+
+    // ---------- change email ----------
+    document.getElementById('email-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const button = document.getElementById('email-btn');
+      const newEmail = document.getElementById('new-email').value.trim();
+      const password = document.getElementById('email-password').value;
+
+      if (newEmail.toLowerCase() === (KS.currentUser().email || '').toLowerCase()) {
+        showMessage('email-msg', 'That is already your email.', 'error');
+        return;
+      }
+
+      button.disabled = true;
+      try {
+        await KS.changeEmail(password, newEmail);
+        e.target.reset();
+        showMessage('email-msg', 'Confirmation link sent to ' + newEmail + '. Click it to finish the change.', 'success');
+      } catch (error) {
+        showMessage('email-msg',
+          KS.isWrongPassword(error) ? 'Password is wrong.' : KS.friendlyError(error), 'error');
+      }
+      button.disabled = false;
+    });
+
+    // ---------- delete account ----------
+    document.getElementById('delete-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const button = document.getElementById('delete-btn');
+      const password = document.getElementById('delete-password').value;
+
+      button.disabled = true;
+      try {
+        await KS.deleteAccount(password);
+        location.href = 'index.html';
+      } catch (error) {
+        showMessage('delete-msg',
+          KS.isWrongPassword(error) ? 'Password is wrong.' : KS.friendlyError(error), 'error');
+        button.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

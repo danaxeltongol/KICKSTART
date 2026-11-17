@@ -1,0 +1,75 @@
+rules_version = '2';
+
+// KICKSTART database rules
+// Paste this whole file into:  Firebase console -> Firestore Database -> Rules -> Publish
+//
+// In short:
+//   - a shopper can only read and write their OWN profile, cart and orders
+//   - anyone can read the shoe list and stock (it is a shop window)
+//   - only the store owner (a document in "admins") can change products or orders
+//   - checkout may lower stock, never raise it
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // You become an admin by creating a document at  admins/YOUR_USER_ID
+    // in the Firebase console. Nobody can create one from the website.
+    function isAdmin() {
+      return request.auth != null &&
+             exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    match /admins/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if false;                       // console only
+    }
+
+    // ---------- shoppers ----------
+    // users/{uid} -> profile,  users/{uid}/cart/... -> saved cart
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      match /{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    // ---------- shoes ----------
+    match /products/{productId} {
+      allow read: if true;                         // the shop window is public
+      allow write: if isAdmin();
+
+      // products/{id}/sizes/{size} -> { label, stock }
+      match /sizes/{sizeId} {
+        allow read: if true;
+        allow write: if isAdmin();
+
+        // Checkout lowers stock. A logged-in shopper may change the stock
+        // number only, only downwards, and never below zero.
+        allow update: if request.auth != null
+                      && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['stock'])
+                      && request.resource.data.stock is int
+                      && request.resource.data.stock >= 0
+                      && request.resource.data.stock < resource.data.stock;
+      }
+    }
+
+    // ---------- orders ----------
+    match /orders/{orderId} {
+      // you see your own orders, the owner sees all of them
+      allow read: if isAdmin() ||
+                     (request.auth != null && resource.data.uid == request.auth.uid);
+
+      // an order must be stamped with the uid of whoever is placing it
+      allow create: if request.auth != null
+                    && request.resource.data.uid == request.auth.uid
+                    && request.resource.data.status == 'Processing';
+
+      // only the owner of the store moves an order along
+      allow update: if isAdmin();
+
+      // a shopper deleting their account takes their orders with them
+      allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
+    }
+  }
+}

@@ -1,0 +1,665 @@
+/* Styles for the account pages (login, sign up, forgot password, my account).
+   Follows the rest of the store: white pages, black type, orange stripes,
+   rounded cards with the light green border used on the product cards,
+   and the dark #111827 buttons. */
+
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+
+/* ---------- top banner (same idea as the other page banners) ---------- */
+.ks-banner {
+  position: relative;
+  height: 250px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.ks-banner::before,
+.ks-banner::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  bottom: -10px;
+  filter: blur(3px);
+}
+
+.ks-banner::before {
+  left: 0;
+  width: 190px;
+  background: repeating-linear-gradient(90deg, #ff6a3d 0 46px, transparent 46px 72px);
+}
+
+.ks-banner::after {
+  right: 0;
+  width: 46px;
+  background: #ff6a3d;
+}
+
+.ks-banner h1 {
+  position: relative;
+  font-family: 'Anton', Impact, 'Arial Narrow Bold', 'Arial Narrow', sans-serif;
+  font-weight: normal;
+  font-size: 3.2rem;
+  line-height: 1;
+  text-transform: uppercase;
+  color: black;
+}
+
+.ks-banner h1 i {
+  display: block;
+}
+
+.ks-banner p {
+  position: relative;
+  font-family: 'Anton', Impact, 'Arial Narrow', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 10px;
+  color: black;
+}
+
+/* ---------- page area ---------- */
+#auth-section {
+  padding: 40px 20px 60px;
+  background-color: white;
+  font-family: Arial, sans-serif;
+  min-height: 50vh;
+}
+
+/* ---------- cards ---------- */
+.auth-card {
+  background: white;
+  padding: 25px;
+  border: 1px solid #cce7cc;
+  border-radius: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto 20px;
+}
+
+.auth-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 6px;
+}
+
+.auth-card label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: bold;
+  margin-top: 14px;
+  margin-bottom: 5px;
+  color: #111;
+}
+
+.auth-card input[type="text"],
+.auth-card input[type="email"],
+.auth-card input[type="tel"],
+.auth-card input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: Arial, sans-serif;
+}
+
+.auth-card input:focus {
+  outline: none;
+  border-color: #111827;
+}
+
+.auth-card .show-pass {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: normal;
+  margin-top: 10px;
+  color: #555;
+  cursor: pointer;
+}
+
+/* ---------- buttons (same as the Add to Cart button) ---------- */
+.ks-btn {
+  display: inline-block;
+  padding: 12px 30px;
+  font-size: 1rem;
+  font-family: Arial, sans-serif;
+  background-color: #111827;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  text-decoration: none;
+  text-align: center;
+}
+
+.ks-btn:hover {
+  transform: scale(1.04);
+}
+
+.ks-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+  transform: none;
+}
+
+.ks-btn.full {
+  width: 100%;
+  margin-top: 18px;
+}
+
+.ks-btn.grey {
+  background-color: #555;
+}
+
+.ks-btn.danger {
+  background-color: crimson;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: #111827;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: Arial, sans-serif;
+  padding: 0;
+}
+
+.auth-links {
+  text-align: center;
+  margin-top: 14px;
+  font-size: 0.95rem;
+}
+
+.auth-links a {
+  color: #111827;
+  font-weight: bold;
+}
+
+/* ---------- messages ---------- */
+.auth-msg {
+  display: none;
+  text-align: center;
+  margin-top: 14px;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.auth-msg.success {
+  display: block;
+  background: #d1e7dd;
+  color: #0f5132;
+}
+
+.auth-msg.error {
+  display: block;
+  background: #f8d7da;
+  color: #842029;
+}
+
+.auth-note {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  padding: 3px 10px;
+  border-radius: 10px;
+}
+
+.badge.ok {
+  background: #d1e7dd;
+  color: #0f5132;
+}
+
+.badge.warn {
+  background: #fff3cd;
+  color: #664d03;
+}
+
+.badge.orange {
+  background: #ffe3d8;
+  color: #a33a12;
+}
+
+/* ============================================================
+   My Account page
+   ============================================================ */
+.account-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 30px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.account-side {
+  width: 280px;
+  flex-shrink: 0;
+  background: white;
+  border: 1px solid #cce7cc;
+  border-radius: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  padding: 25px 20px;
+  text-align: center;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #111827;
+  color: white;
+  font-family: 'Anton', Impact, 'Arial Narrow', sans-serif;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+}
+
+.account-side h2 {
+  font-size: 1.2rem;
+  overflow-wrap: anywhere;
+}
+
+.account-side .side-email {
+  color: #555;
+  font-size: 0.9rem;
+  margin: 4px 0 10px;
+  overflow-wrap: anywhere;
+}
+
+.account-menu {
+  list-style: none;
+  margin-top: 20px;
+  border-top: 1px solid #eee;
+  text-align: left;
+}
+
+.account-menu button {
+  width: 100%;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #eee;
+  padding: 14px 8px;
+  font-size: 1rem;
+  font-family: Arial, sans-serif;
+  text-align: left;
+  cursor: pointer;
+  color: #111;
+}
+
+.account-menu button i {
+  width: 24px;
+  color: #555;
+}
+
+.account-menu button:hover {
+  background: #f8f9fa;
+}
+
+.account-menu button.active {
+  font-weight: bold;
+  border-left: 4px solid #ff6a3d;
+  padding-left: 12px;
+}
+
+.account-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.account-main .auth-card {
+  max-width: none;
+}
+
+.account-main .ks-btn {
+  margin-top: 18px;
+}
+
+.panel {
+  display: none;
+}
+
+.panel.active {
+  display: block;
+}
+
+.panel-title {
+  font-family: 'Anton', Impact, 'Arial Narrow', sans-serif;
+  font-weight: normal;
+  font-size: 1.8rem;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+}
+
+/* little number boxes on top of the details panel */
+.stats {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.stat {
+  flex: 1;
+  border: 1px solid #cce7cc;
+  border-radius: 20px;
+  padding: 15px;
+  text-align: center;
+  text-decoration: none;
+  color: #111;
+  cursor: pointer;
+  background: white;
+  font-family: Arial, sans-serif;
+}
+
+.stat strong {
+  display: block;
+  font-family: 'Anton', Impact, 'Arial Narrow', sans-serif;
+  font-weight: normal;
+  font-size: 2rem;
+}
+
+.stat span {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.two-col {
+  display: flex;
+  gap: 15px;
+}
+
+.two-col > div {
+  flex: 1;
+}
+
+/* ---------- orders ---------- */
+.order {
+  border: 1px solid #cce7cc;
+  border-radius: 20px;
+  padding: 18px 20px;
+  margin-bottom: 15px;
+  background: white;
+}
+
+.order-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.order-head .order-no {
+  font-weight: bold;
+}
+
+.order-head .order-date {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.order-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.order-item img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #eee;
+}
+
+.order-item .oi-name {
+  flex: 1;
+}
+
+.order-item .oi-name small {
+  display: block;
+  color: #666;
+  margin-top: 2px;
+}
+
+.order-foot {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 12px;
+  font-size: 0.9rem;
+  color: #444;
+  line-height: 1.5;
+}
+
+.order-foot .order-total {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #111;
+  text-align: right;
+}
+
+.empty-box {
+  text-align: center;
+  border: 1px dashed #cce7cc;
+  border-radius: 20px;
+  padding: 40px 20px;
+  color: #555;
+}
+
+.empty-box .ks-btn {
+  margin-top: 15px;
+}
+
+/* ---------- phones ---------- */
+@media (max-width: 800px) {
+  .account-layout {
+    flex-direction: column;
+  }
+
+  .account-side {
+    width: 100%;
+  }
+
+  .two-col {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .ks-banner h1 {
+    font-size: 2.3rem;
+  }
+
+  .ks-banner::before {
+    width: 70px;
+  }
+}
+
+/* ============================================================
+   Store Admin page
+   ============================================================ */
+
+/* the Orders / Stock tabs (same pills as the checkout steps) */
+.steps {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  list-style: none;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+
+.steps li {
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  color: #777;
+  font-size: 0.95rem;
+}
+
+.steps li.active {
+  background: #111827;
+  border-color: #111827;
+  color: white;
+  font-weight: bold;
+}
+
+#admin-tabs li {
+  cursor: pointer;
+}
+
+.admin-select,
+.auth-card select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: Arial, sans-serif;
+  background: white;
+  cursor: pointer;
+}
+
+#admin-area .stats .stat {
+  cursor: default;
+}
+
+#admin-area .auth-card input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+/* stock editor */
+.stock-row .order-item img {
+  width: 70px;
+  height: 70px;
+}
+
+.size-grid {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 12px 0;
+}
+
+.size-box {
+  border: 1px solid #cce7cc;
+  border-radius: 10px;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.size-box.low {
+  border-color: #ff6a3d;
+  background: #fff6f2;
+}
+
+.size-box label {
+  display: block;
+  font-size: 0.8rem;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.size-box input {
+  width: 70px;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.auth-card textarea,
+.stock-row textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: Arial, sans-serif;
+  resize: vertical;
+}
+
+.edit-box {
+  border-top: 1px solid #eee;
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
+.edit-box label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: bold;
+  margin: 10px 0 5px;
+}
+
+.edit-box input {
+  width: 100%;
+  padding: 9px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.row-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.row-note {
+  margin-left: 10px;
+  font-size: 0.9rem;
+}
+
+.stock-row .edit-toggle {
+  align-self: flex-start;
+}
+
+.stock-row .ks-btn {
+  padding: 8px 20px;
+  font-size: 0.95rem;
+}
+
+.stock-saved {
+  margin-left: 10px;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 800px) {
+  #admin-area .stats {
+    flex-wrap: wrap;
+  }
+
+  #admin-area .stats .stat {
+    flex: 1 1 40%;
+  }
+}

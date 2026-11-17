@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kickstart | Cart</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+
+    #cart-section {
+      padding: 40px;
+      background-color: white;
+      font-family: Arial, sans-serif;
+      scroll-margin-top: 90px;   /* so the sticky header does not cover the title */
+    }
+
+    #cart-section h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    #cart-status {
+      text-align: center;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    /* ---------- 1 Cart > 2 Details > 3 Done ---------- */
+    .steps {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      list-style: none;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .steps li {
+      padding: 8px 18px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      color: #777;
+      font-size: 0.95rem;
+    }
+
+    .steps li.active {
+      background: #111827;
+      border-color: #111827;
+      color: white;
+      font-weight: bold;
+    }
+
+    .steps li.done {
+      border-color: #111827;
+      color: #111827;
+    }
+
+    .step {
+      display: none;
+    }
+
+    .step.active {
+      display: block;
+    }
+
+    /* ---------- cart rows ---------- */
+    #cart-items {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 20px;
+    }
+
+    #cart-items li {
+      background: white;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .cart-photo {
+      width: 90px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid #eee;
+      flex-shrink: 0;
+    }
+
+    .cart-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .cart-info strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .cart-info small {
+      color: #555;
+      font-size: 0.9rem;
+    }
+
+    .qty {
+      display: flex;
+      align-items: center;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .qty button {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: #f1f1f1;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    .qty span {
+      width: 34px;
+      text-align: center;
+    }
+
+    .line-total {
+      width: 120px;
+      text-align: right;
+      font-weight: bold;
+    }
+
+    .remove-btn {
+      background: crimson;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+
+    .empty-cart {
+      text-align: center;
+      padding: 30px 0;
+    }
+
+    /* ---------- summary box ---------- */
+    .cart-summary {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      width: 320px;
+      max-width: 100%;
+      margin: 30px auto;
+      text-align: center;
+    }
+
+    .sum-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 8px;
+    }
+
+    .sum-row.total {
+      border-top: 1px solid #ddd;
+      margin-top: 6px;
+      padding-top: 10px;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .sum-row.discount {
+      color: #0f5132;
+    }
+
+    .cart-summary input {
+      padding: 6px;
+      margin-top: 10px;
+      width: 90%;
+    }
+
+    .cart-summary button,
+    .checkout-card button,
+    #receipt button {
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 12px;
+      margin-top: 10px;
+      color: white;
+    }
+
+    #apply-coupon { background: black; }
+    #clear-cart, #back-to-cart, .grey-btn { background: #555; }
+    #checkout, #place-order { background: green; }
+    .dark-btn { background: #111827; }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    /* ---------- messages ---------- */
+    .message {
+      text-align: center;
+      margin: 15px auto;
+      padding: 10px;
+      border-radius: 8px;
+      display: none;
+      width: 320px;
+      max-width: 100%;
+    }
+    .message.success {
+      background: #d1e7dd;
+      color: #0f5132;
+    }
+    .message.error {
+      background: #f8d7da;
+      color: #842029;
+    }
+
+    /* ---------- step 2: details ---------- */
+    .checkout-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .checkout-card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      width: 380px;
+      max-width: 100%;
+    }
+
+    .checkout-card h3 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .checkout-card label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin: 12px 0 5px;
+    }
+
+    .checkout-card input[type="text"],
+    .checkout-card input[type="tel"] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    .field-error {
+      display: none;
+      color: #842029;
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+
+    .pay-option {
+      display: flex !important;
+      align-items: center;
+      gap: 8px;
+      font-weight: normal !important;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      margin: 6px 0 !important;
+      cursor: pointer;
+    }
+
+    .checkout-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+
+    .mini-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 0.95rem;
+    }
+
+    .mini-item img {
+      width: 55px;
+      height: 55px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid #eee;
+    }
+
+    .mini-item .mini-name {
+      flex: 1;
+    }
+
+    .mini-item small {
+      display: block;
+      color: #555;
+    }
+
+    .small-note {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    /* ---------- step 3: receipt ---------- */
+    #receipt {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      width: 440px;
+      max-width: 100%;
+      margin: 20px auto;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    #receipt h3,
+    #receipt .thanks {
+      text-align: center;
+    }
+
+    #receipt .order-no {
+      text-align: center;
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 10px;
+      margin: 12px 0;
+    }
+
+    #receipt .ship {
+      margin-top: 12px;
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    #receipt .receipt-actions {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 700px) {
+      #cart-section { padding: 30px 15px; }
+      #cart-items li { flex-wrap: wrap; }
+      .cart-info { flex-basis: calc(100% - 110px); }
+      .line-total { width: auto; flex: 1; text-align: left; }
+    }
+  </style>
+</head>
+
+<body id="body">
+
+  <section id="header" class="section-p1">
+    <a href="index.html"><img src="images/logonobg.png" class="logo" alt="" height="40" width="50"></a>
+    <div>
+      <ul id="navbar">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="blog.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a class="active" href="cart.html"><i class="fa-solid fa-cart-shopping"></i></a></li>
+        <li><a href="login.html" id="account-link" title="Log in"><i class="fa-solid fa-user"></i></a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="promotag">
+    <img src="images/shop.page (1).png" alt="promote" style="width: 100%; max-height: 300px; object-fit: cover; border-radius: 10px;"> 
+    <br><br><br><br><br><br>
+  </section>
+
+  <section id="cart-section">
+    <h1 id="page-title">Your Shopping Cart</h1>
+
+    <ul class="steps">
+      <li id="step-label-1" class="active">1. Cart</li>
+      <li id="step-label-2">2. Details</li>
+      <li id="step-label-3">3. Order Placed</li>
+    </ul>
+
+    <!-- ================= STEP 1: the cart ================= -->
+    <div class="step active" id="step-1">
+      <p id="cart-status"></p>
+
+      <ul id="cart-items"></ul>
+
+      <div class="cart-summary">
+        <div class="sum-row"><span>Total Items:</span> <span id="cart-count">0</span></div>
+        <div class="sum-row"><span>Subtotal:</span> <span id="cart-subtotal">₱0.00</span></div>
+        <div class="sum-row discount" id="discount-row" style="display:none;"><span>Voucher (20% off):</span> <span id="cart-discount"></span></div>
+        <div class="sum-row total"><span>Total Cost:</span> <span id="cart-total">₱0.00</span></div>
+
+        <input type="text" id="coupon" placeholder="Enter a voucher">
+        <button id="apply-coupon">Apply Coupon</button><br>
+        <button id="clear-cart">Clear Cart</button>
+        <button id="checkout">Checkout</button>
+      </div>
+    </div>
+
+    <!-- ================= STEP 2: delivery details ================= -->
+    <div class="step" id="step-2">
+      <div class="checkout-wrap">
+
+        <form class="checkout-card" id="details-form" novalidate>
+          <h3>Delivery Details</h3>
+
+          <label for="user-name">Full Name</label>
+          <input type="text" id="user-name" autocomplete="name">
+          <p class="field-error" id="err-name">Please enter your full name.</p>
+
+          <label for="user-address">Delivery Address</label>
+          <input type="text" id="user-address" autocomplete="street-address" placeholder="House no., street, barangay, city">
+          <p class="field-error" id="err-address">Please enter your complete address.</p>
+
+          <label for="user-contact">Contact Number</label>
+          <input type="tel" id="user-contact" autocomplete="tel" placeholder="09XXXXXXXXX">
+          <p class="field-error" id="err-contact">Enter a valid mobile number, like 09171234567.</p>
+
+          <label>Payment Method</label>
+          <label class="pay-option"><input type="radio" name="payment" value="Cash on Delivery" checked> Cash on Delivery</label>
+          <label class="pay-option"><input type="radio" name="payment" value="GCash on Delivery"> GCash on Delivery</label>
+          <label class="pay-option"><input type="radio" name="payment" value="Pay at Store Pickup (Quiapo)"> Pay at Store Pickup (Quiapo)</label>
+
+          <div class="checkout-actions">
+            <button type="button" id="back-to-cart">Back to Cart</button>
+            <button type="submit" id="place-order">Place Order</button>
+          </div>
+        </form>
+
+        <div class="checkout-card">
+          <h3>Order Summary</h3>
+          <div id="mini-items"></div>
+          <div class="sum-row" style="margin-top:10px;"><span>Subtotal:</span> <span id="mini-subtotal"></span></div>
+          <div class="sum-row discount" id="mini-discount-row" style="display:none;"><span>Voucher (20% off):</span> <span id="mini-discount"></span></div>
+          <div class="sum-row total"><span>Total:</span> <span id="mini-total"></span></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================= STEP 3: receipt ================= -->
+    <div class="step" id="step-3">
+      <div id="receipt"></div>
+    </div>
+
+    <div id="message" class="message"></div>
+  </section>
+
+  <footer class="foot">
+    <div class="col">
+      <img src="images/logonobg.png" alt="LOGO" height="60">
+      <h4>CONTACT</h4>
+      <p><strong>ADDRESS:</strong> 363 P. Casal, Quiapo, Manila</p>
+      <p><strong>PHONE:</strong> +63 9189296950</p>
+      <p><strong>HOURS:</strong> 10:00 - 18:00, MON - SAT</p>
+      <div class="follow">
+        <h4><strong>Follow us on Instagram:</strong></h4>
+        <img src="images/qrnobg.png" alt="qr" height="100" width="100">
+      </div>
+    </div>
+
+    <div class="col">
+      <h4>ABOUT</h4>
+      <a href="blog.html" >About us</a>
+      <a href="blog.html">Privacy Policy</a>
+      <a href="blog.html">Terms and Conditions</a>
+      <a href="contact.html">Contact us</a>
+    </div>
+
+    <div class="copyright">
+      <p>© 2025, Kickstart - Dan Axel M. Tongol - T.I.PMNL</p>
+    </div>
+  </footer>
+
+  <!-- Firebase (accounts + database) -->
+  <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="auth.js"></script>
+  <script>
+    let cart = [];
+    let subtotal = 0;
+    let discount = 0;
+    let total = 0;
+    let discountApplied = false;
+    let loggedIn = false;
+
+    const cartList = document.getElementById('cart-items');
+    const message = document.getElementById('message');
+    const receipt = document.getElementById('receipt');
+    const cartStatus = document.getElementById('cart-status');
+
+    function showMessage(text, type = "success") {
+      message.textContent = text;
+      message.className = "message " + type;
+      message.style.display = "block";
+      message.scrollIntoView({ block: 'nearest' });
+      setTimeout(() => message.style.display = "none", 4000);
+    }
+
+    // ---------- which step is showing: 1 cart, 2 details, 3 receipt ----------
+    function showStep(number) {
+      for (let i = 1; i <= 3; i++) {
+        document.getElementById('step-' + i).classList.toggle('active', i === number);
+        const label = document.getElementById('step-label-' + i);
+        label.classList.toggle('active', i === number);
+        label.classList.toggle('done', i < number);
+      }
+      const titles = { 1: 'Your Shopping Cart', 2: 'Checkout', 3: 'Thank You!' };
+      document.getElementById('page-title').textContent = titles[number];
+      document.getElementById('cart-section').scrollIntoView();
+    }
+
+    // ---------- step 1: the cart ----------
+    // Get the cart from the database (logged in) or the browser (guest)
+    async function loadCart() {
+      try {
+        cart = await KS.getCart();
+      } catch (error) {
+        cart = [];
+        showMessage(KS.friendlyError(error), 'error');
+      }
+      updateCart();
+    }
+
+    function calculateTotals() {
+      subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      discount = discountApplied ? subtotal * 0.2 : 0;
+      total = subtotal - discount;
+    }
+
+    function updateCart() {
+      cartList.innerHTML = '';
+
+      if (cart.length === 0) {
+        cartList.innerHTML = '<p class="empty-cart">Your cart is empty. <a href="shop.html">Go to the shop</a></p>';
+      } else {
+        cart.forEach((item) => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <img class="cart-photo" src="${KS.escapeHtml(item.image)}" alt="">
+            <div class="cart-info">
+              <strong>${KS.escapeHtml(item.name)}</strong>
+              <small>Size: ${KS.escapeHtml(item.size)} &nbsp;|&nbsp; ${KS.formatPeso(item.price)} each</small>
+            </div>
+            <div class="qty">
+              <button type="button" class="qty-minus" aria-label="Less">-</button>
+              <span>${item.qty}</span>
+              <button type="button" class="qty-plus" aria-label="More">+</button>
+            </div>
+            <div class="line-total">${KS.formatPeso(item.price * item.qty)}</div>
+            <button type="button" class="remove-btn">Remove</button>
+          `;
+          li.querySelector('.qty-minus').addEventListener('click', () => changeQty(item, item.qty - 1));
+          li.querySelector('.qty-plus').addEventListener('click', () => changeQty(item, item.qty + 1));
+          li.querySelector('.remove-btn').addEventListener('click', () => removeItem(item.id));
+          cartList.appendChild(li);
+        });
+      }
+
+      calculateTotals();
+      const pairs = cart.reduce((sum, item) => sum + item.qty, 0);
+      document.getElementById('cart-count').textContent = pairs;
+      document.getElementById('cart-subtotal').textContent = KS.formatPeso(subtotal);
+      document.getElementById('cart-discount').textContent = '-' + KS.formatPeso(discount);
+      document.getElementById('discount-row').style.display = discountApplied ? 'flex' : 'none';
+      document.getElementById('cart-total').textContent = KS.formatPeso(total);
+    }
+
+    async function changeQty(item, qty) {
+      if (qty > KS.maxQty) {
+        showMessage('Maximum of ' + KS.maxQty + ' pairs per shoe.', 'error');
+        return;
+      }
+      try {
+        await KS.setQty(item.id, qty);      // 0 removes the shoe
+        await loadCart();
+      } catch (error) {
+        showMessage(KS.friendlyError(error), 'error');
+      }
+    }
+
+    async function removeItem(id) {
+      try {
+        await KS.removeFromCart(id);
+        await loadCart();
+        showMessage("Item removed.", "error");
+      } catch (error) {
+        showMessage(KS.friendlyError(error), 'error');
+      }
+    }
+
+    document.getElementById('clear-cart').addEventListener('click', async () => {
+      try {
+        await KS.clearCart();
+        discountApplied = false;
+        await loadCart();
+        showMessage("Cart cleared.", "error");
+      } catch (error) {
+        showMessage(KS.friendlyError(error), 'error');
+      }
+    });
+
+    document.getElementById('apply-coupon').addEventListener('click', () => {
+      const code = document.getElementById('coupon').value.trim().toUpperCase();
+      if (cart.length === 0) {
+        showMessage('Your cart is empty!', 'error');
+      } else if (discountApplied) {
+        showMessage('Coupon already used.', 'error');
+      } else if (code === 'DISCOUNT20') {
+        discountApplied = true;
+        updateCart();
+        showMessage('20% discount applied');
+      } else {
+        showMessage('Invalid coupon code.', 'error');
+      }
+    });
+
+    // ---------- step 2: delivery details ----------
+    document.getElementById('checkout').addEventListener('click', async () => {
+      if (cart.length === 0) {
+        showMessage('Your cart is empty!', 'error');
+        return;
+      }
+
+      // An account is needed so the order can be saved and the stock taken
+      // off the shelf. The cart comes along when they log in.
+      if (!loggedIn && KS.configured) {
+        showMessage('Please log in to place an order. Your cart will be waiting for you.', 'error');
+        setTimeout(() => { location.href = 'login.html?next=cart.html'; }, 1500);
+        return;
+      }
+
+      // small copy of the cart beside the form
+      document.getElementById('mini-items').innerHTML = cart.map((item) => `
+        <div class="mini-item">
+          <img src="${KS.escapeHtml(item.image)}" alt="">
+          <div class="mini-name">${KS.escapeHtml(item.name)}
+            <small>Size: ${KS.escapeHtml(item.size)} | Qty: ${item.qty}</small></div>
+          <div>${KS.formatPeso(item.price * item.qty)}</div>
+        </div>`).join('');
+      document.getElementById('mini-subtotal').textContent = KS.formatPeso(subtotal);
+      document.getElementById('mini-discount').textContent = '-' + KS.formatPeso(discount);
+      document.getElementById('mini-discount-row').style.display = discountApplied ? 'flex' : 'none';
+      document.getElementById('mini-total').textContent = KS.formatPeso(total);
+
+      showStep(2);
+
+      // fill in the details saved on the account page
+      try {
+        const profile = await KS.getProfile();
+        const fields = { 'user-name': profile.name, 'user-address': profile.address, 'user-contact': profile.contact };
+        for (const id in fields) {
+          const input = document.getElementById(id);
+          if (!input.value && fields[id]) input.value = fields[id];
+        }
+      } catch (error) {
+        console.warn(error);
+      }
+    });
+
+    document.getElementById('back-to-cart').addEventListener('click', () => showStep(1));
+
+    // Returns true when the field is fine; shows the red text under it when not
+    function checkField(inputId, errorId, isValid) {
+      document.getElementById(errorId).style.display = isValid ? 'none' : 'block';
+      document.getElementById(inputId).style.borderColor = isValid ? '#ccc' : 'crimson';
+      return isValid;
+    }
+
+    document.getElementById('details-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('user-name').value.trim();
+      const address = document.getElementById('user-address').value.trim();
+      const contact = document.getElementById('user-contact').value.replace(/[\s-]/g, '');
+      const payment = document.querySelector('input[name="payment"]:checked').value;
+
+      const nameOk = checkField('user-name', 'err-name', name.length >= 2);
+      const addressOk = checkField('user-address', 'err-address', address.length >= 10);
+      const contactOk = checkField('user-contact', 'err-contact', /^(09|\+639)\d{9}$/.test(contact));
+      if (!nameOk || !addressOk || !contactOk) return;
+
+      const button = document.getElementById('place-order');
+      button.disabled = true;               // stops a double click making two orders
+      button.textContent = 'Placing order...';
+
+      try {
+        // make sure the cart did not change in another tab
+        cart = await KS.getCart();
+        calculateTotals();
+        if (cart.length === 0) {
+          updateCart();
+          showStep(1);
+          showMessage('Your cart is empty!', 'error');
+          return;
+        }
+
+        // takes the stock off the shelf and saves the order together
+        const order = await KS.placeOrder({
+          items: cart,
+          subtotal: subtotal,
+          discount: discount,
+          total: total,
+          payment: payment,
+          name: name,
+          address: address,
+          contact: contact
+        });
+
+        await KS.clearCart();
+        cart = [];
+        discountApplied = false;
+        updateCart();
+        showReceipt(order);
+      } catch (error) {
+        // most likely: somebody else bought the last pair while we were typing.
+        // Back to the cart, where they can change the quantity or remove it.
+        await loadCart();
+        showStep(1);
+        showMessage(KS.friendlyError(error), 'error');
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Place Order';
+      }
+    });
+
+    // ---------- step 3: receipt ----------
+    function showReceipt(order) {
+      const date = new Date(order.createdAt).toLocaleDateString('en-PH', {
+        year: 'numeric', month: 'long', day: 'numeric'
+      });
+      const items = order.items.map((item) => `
+        <div class="mini-item">
+          <img src="${KS.escapeHtml(item.image)}" alt="">
+          <div class="mini-name">${KS.escapeHtml(item.name)}
+            <small>Size: ${KS.escapeHtml(item.size)} | Qty: ${item.qty}</small></div>
+          <div>${KS.formatPeso(item.price * item.qty)}</div>
+        </div>`).join('');
+
+      receipt.innerHTML = `
+        <h3>Checkout Complete ✅</h3>
+        <p class="thanks">Thank you for shopping with Kickstart.</p>
+        <p class="order-no">Order No. <strong>${order.orderNumber}</strong><br><small>${date}</small></p>
+        ${items}
+        <div class="sum-row" style="margin-top:10px;"><span>Subtotal:</span> <span>${KS.formatPeso(order.subtotal)}</span></div>
+        ${order.discount ? `<div class="sum-row discount"><span>Voucher (20% off):</span> <span>-${KS.formatPeso(order.discount)}</span></div>` : ''}
+        <div class="sum-row total"><span>Total Payment:</span> <span>${KS.formatPeso(order.total)}</span></div>
+        <div class="ship">
+          <p><strong>Name:</strong> ${KS.escapeHtml(order.name)}</p>
+          <p><strong>Address:</strong> ${KS.escapeHtml(order.address)}</p>
+          <p><strong>Contact:</strong> ${KS.escapeHtml(order.contact)}</p>
+          <p><strong>Payment:</strong> ${KS.escapeHtml(order.payment)}</p>
+        </div>
+        <p class="small-note">Please prepare the exact amount. We will contact you on ${KS.escapeHtml(order.contact)} to confirm delivery.</p>
+        ${KS.configured ? '' : '<p class="small-note" style="color:crimson;">Demo only - this order was not saved because Firebase is not connected yet.</p>'}
+        <div class="receipt-actions">
+          <button class="dark-btn" onclick="goBackToShop()">Back to Shop</button>
+          ${KS.configured ? `<button class="grey-btn" onclick="window.location.href='account.html#orders'">View My Orders</button>` : ''}
+        </div>
+      `;
+      showStep(3);
+    }
+
+    function goBackToShop() {
+      window.location.href = "shop.html";
+    }
+
+    // ---------- tell the user where this cart is being saved ----------
+    KS.ready.then((user) => {
+      loggedIn = !!user;
+      if (user) {
+        cartStatus.textContent = 'Saved to your account (' + user.email + ')';
+      } else {
+        cartStatus.innerHTML = '<a href="login.html?next=cart.html">Log in</a> or ' +
+          '<a href="signup.html?next=cart.html">create an account</a> to save your cart and place your order.';
+      }
+    });
+
+    loadCart();
+  </script>
+</body>
+</html>

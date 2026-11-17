@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kickstart | Store admin</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="auth.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body id="body">
+
+  <section id="header" class="section-p1">
+    <a href="index.html"><img src="images/logonobg.png" class="logo" alt="" height="40" width="50"></a>
+    <div>
+      <ul id="navbar">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="blog.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="cart.html"><i class="fa-solid fa-cart-shopping"></i></a></li>
+        <li><a class="active" href="login.html" id="account-link" title="Log in"><i class="fa-solid fa-user"></i></a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="ks-banner">
+    <h1>Store <i>Admin</i></h1>
+    <p>Orders | Shoes | Stock</p>
+  </section>
+
+  <section id="auth-section">
+
+    <div class="auth-card" id="checking"><p class="auth-note">Checking your account...</p></div>
+
+    <div class="auth-card" id="denied" style="display:none; text-align:center;">
+      <h3>Owner access only</h3>
+      <p class="auth-note">This page is for the Kickstart store owner. If that is you, add your user ID to the <strong>admins</strong> collection in Firebase (see README.md).</p>
+      <p class="auth-note" id="my-uid"></p>
+      <a class="ks-btn" href="index.html">Back to Shop</a>
+    </div>
+
+    <div id="admin-area" style="display:none;">
+
+      <div class="stats">
+        <div class="stat"><strong id="stat-orders">-</strong><span>orders</span></div>
+        <div class="stat"><strong id="stat-today">-</strong><span>today</span></div>
+        <div class="stat"><strong id="stat-sales">-</strong><span>total sales</span></div>
+        <div class="stat"><strong id="stat-low">-</strong><span>low stock</span></div>
+      </div>
+
+      <ul class="steps" id="admin-tabs">
+        <li class="active" data-tab="orders">Orders</li>
+        <li data-tab="shoes">Shoes &amp; Stock</li>
+      </ul>
+
+      <!-- ============ ORDERS ============ -->
+      <div class="panel active" id="tab-orders">
+        <div class="auth-card" style="max-width:none;">
+          <div class="two-col">
+            <div>
+              <label for="filter-status">Show</label>
+              <select id="filter-status" class="admin-select">
+                <option value="">All orders</option>
+              </select>
+            </div>
+            <div>
+              <label for="search">Search order no. or customer</label>
+              <input type="text" id="search" placeholder="KS-2026...">
+            </div>
+          </div>
+        </div>
+        <div id="order-list"><p class="auth-note">Loading orders...</p></div>
+      </div>
+
+      <!-- ============ SHOES & STOCK ============ -->
+      <div class="panel" id="tab-shoes">
+
+        <div class="auth-card" style="max-width:none;">
+          <h3>Add a Shoe</h3>
+          <p class="auth-note">The shoe appears in the shop straight away, with its own page.</p>
+
+          <form id="add-form">
+            <div class="two-col">
+              <div>
+                <label for="add-name">Name (shown in the cart)</label>
+                <input type="text" id="add-name" required placeholder="Nike Air Max 90">
+              </div>
+              <div>
+                <label for="add-brand">Brand</label>
+                <input type="text" id="add-brand" placeholder="Nike">
+              </div>
+            </div>
+
+            <label for="add-title">Heading on the shop card and product page</label>
+            <input type="text" id="add-title" placeholder="Air Max 90 'Infrared' sneakers">
+
+            <div class="two-col">
+              <div>
+                <label for="add-price">Price (₱)</label>
+                <input type="number" id="add-price" min="0" step="1" required placeholder="7995">
+              </div>
+              <div>
+                <label for="add-stock">Starting stock per size</label>
+                <input type="number" id="add-stock" min="0" step="1" value="5">
+              </div>
+            </div>
+
+            <label for="add-image">Photo</label>
+            <input type="text" id="add-image" placeholder="images/airmax90.webp">
+            <p class="auth-note">Put the photo file in the <strong>images</strong> folder first, then type its name here. A full https:// link works too.</p>
+
+            <label for="add-description">Product details</label>
+            <textarea id="add-description" rows="4" placeholder="What makes this shoe worth buying..."></textarea>
+
+            <button type="submit" class="ks-btn" id="add-btn">Add Shoe</button>
+            <div id="add-msg" class="auth-msg"></div>
+          </form>
+        </div>
+
+        <div class="auth-card" style="max-width:none;">
+          <h3>Starting Catalogue</h3>
+          <p class="auth-note">Press this once after setting up Firebase. It copies the shoes from products.js into the database. Pressing it again refreshes those shoes and keeps your stock numbers. Shoes you added yourself are left alone.</p>
+          <button type="button" class="ks-btn grey" id="load-catalogue">Load Catalogue</button>
+          <div id="catalogue-msg" class="auth-msg"></div>
+        </div>
+
+        <div id="stock-list"><p class="auth-note">Loading shoes...</p></div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="col">
+      <img src="images/logonobg.png" alt="LOGO" height="60">
+      <h4>CONTACT</h4>
+      <p><strong>ADDRESS:</strong> 363 P. Casal, Quiapo, Manila</p>
+      <p><strong>PHONE:</strong> +63 9189296950</p>
+      <p><strong>HOURS:</strong> 10:00 - 18:00, MON - SAT</p>
+      <div class="follow">
+        <h4><strong>Follow us on Instagram:</strong></h4>
+        <img src="images/qrnobg.png" alt="qr" height="100" width="100">
+      </div>
+    </div>
+
+    <div class="col">
+      <h4>ABOUT</h4>
+      <a href="blog.html" >About us</a>
+      <a href="blog.html">Privacy Policy</a>
+      <a href="blog.html">Terms and Conditions</a>
+      <a href="contact.html">Contact us</a>
+    </div>
+
+    <div class="copyright">
+      <p>© 2025, Kickstart - Dan Axel M. Tongol - T.I.PMNL</p>
+    </div>
+  </footer>
+
+  <!-- Firebase (accounts + database) -->
+  <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="auth.js"></script>
+  <script src="products.js"></script>
+  <script>
+    function showMessage(id, text, type) {
+      const box = document.getElementById(id);
+      box.textContent = text;
+      box.className = 'auth-msg ' + type;
+    }
+
+    const LOW_STOCK = 2;        // "running out" line
+    let orders = [];
+
+    // ---------- only the owner gets in ----------
+    KS.ready.then(async (user) => {
+      if (!user) { location.replace('login.html?next=admin.html'); return; }
+
+      const allowed = await KS.isAdmin();
+      document.getElementById('checking').style.display = 'none';
+
+      if (!allowed) {
+        document.getElementById('denied').style.display = 'block';
+        document.getElementById('my-uid').textContent = 'Your user ID: ' + user.uid;
+        return;
+      }
+
+      document.getElementById('admin-area').style.display = 'block';
+      KS.statuses.forEach((status) => {
+        const option = document.createElement('option');
+        option.value = status;
+        option.textContent = status;
+        document.getElementById('filter-status').appendChild(option);
+      });
+
+      loadOrders();
+      loadShoes();
+    });
+
+    // ---------- tabs ----------
+    document.querySelectorAll('#admin-tabs li').forEach((tab) => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('#admin-tabs li').forEach((t) => t.classList.toggle('active', t === tab));
+        document.getElementById('tab-orders').classList.toggle('active', tab.dataset.tab === 'orders');
+        document.getElementById('tab-shoes').classList.toggle('active', tab.dataset.tab === 'shoes');
+      });
+    });
+
+    // ============================================================
+    //  ORDERS
+    // ============================================================
+    async function loadOrders() {
+      const box = document.getElementById('order-list');
+      try {
+        orders = await KS.getAllOrders();
+      } catch (error) {
+        box.innerHTML = '<p class="auth-note">' + KS.escapeHtml(KS.friendlyError(error)) + '</p>';
+        return;
+      }
+
+      const startOfToday = new Date().setHours(0, 0, 0, 0);
+      const live = orders.filter((o) => o.status !== 'Cancelled');
+      document.getElementById('stat-orders').textContent = orders.length;
+      document.getElementById('stat-today').textContent = orders.filter((o) => o.createdAt >= startOfToday).length;
+      document.getElementById('stat-sales').textContent =
+        KS.formatPeso(live.reduce((sum, o) => sum + (o.total || 0), 0)).replace('.00', '');
+
+      drawOrders();
+    }
+
+    function drawOrders() {
+      const box = document.getElementById('order-list');
+      const status = document.getElementById('filter-status').value;
+      const search = document.getElementById('search').value.trim().toLowerCase();
+
+      const shown = orders.filter((order) => {
+        if (status && order.status !== status) return false;
+        if (!search) return true;
+        return (order.orderNumber || '').toLowerCase().includes(search) ||
+               (order.name || '').toLowerCase().includes(search) ||
+               (order.email || '').toLowerCase().includes(search);
+      });
+
+      if (shown.length === 0) {
+        box.innerHTML = '<div class="empty-box"><p>No orders to show.</p></div>';
+        return;
+      }
+
+      box.innerHTML = shown.map((order) => {
+        const date = new Date(order.createdAt).toLocaleString('en-PH', {
+          year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'
+        });
+        const items = (order.items || []).map((item) =>
+          '<div class="order-item">' +
+            '<img src="' + KS.escapeHtml(item.image || 'images/logonobg.png') + '" alt="">' +
+            '<div class="oi-name">' + KS.escapeHtml(item.name) +
+              '<small>Size: ' + KS.escapeHtml(item.size) + ' | Qty: ' + (item.qty || 1) + '</small></div>' +
+            '<div>' + KS.formatPeso((item.price || 0) * (item.qty || 1)) + '</div>' +
+          '</div>').join('');
+
+        const options = KS.statuses.map((s) =>
+          '<option value="' + s + '"' + (s === order.status ? ' selected' : '') + '>' + s + '</option>').join('');
+
+        return '<div class="order">' +
+                 '<div class="order-head">' +
+                   '<div><span class="order-no">' + KS.escapeHtml(order.orderNumber || 'Order') + '</span><br>' +
+                     '<span class="order-date">' + date + '</span></div>' +
+                   '<select class="admin-select status-select" data-id="' + order.id + '">' + options + '</select>' +
+                 '</div>' +
+                 items +
+                 '<div class="order-foot">' +
+                   '<div><strong>' + KS.escapeHtml(order.name || '') + '</strong><br>' +
+                     KS.escapeHtml(order.address || '') + '<br>' +
+                     KS.escapeHtml(order.contact || '') + ' | ' + KS.escapeHtml(order.email || '') + '<br>' +
+                     'Payment: ' + KS.escapeHtml(order.payment || '') + '</div>' +
+                   '<div class="order-total">Total ' + KS.formatPeso(order.total) + '</div>' +
+                 '</div>' +
+               '</div>';
+      }).join('');
+
+      // changing the dropdown moves the order along
+      box.querySelectorAll('.status-select').forEach((select) => {
+        select.addEventListener('change', async () => {
+          const id = select.dataset.id;
+          const previous = orders.find((o) => o.id === id).status;
+          select.disabled = true;
+          try {
+            await KS.updateOrderStatus(id, select.value);
+            orders.find((o) => o.id === id).status = select.value;
+          } catch (error) {
+            select.value = previous;
+            alert(KS.friendlyError(error));
+          }
+          select.disabled = false;
+        });
+      });
+    }
+
+    document.getElementById('filter-status').addEventListener('change', drawOrders);
+    document.getElementById('search').addEventListener('input', drawOrders);
+
+    // ============================================================
+    //  SHOES & STOCK
+    // ============================================================
+    async function loadShoes() {
+      const box = document.getElementById('stock-list');
+      let products;
+      try {
+        products = await KS.getCatalogue();
+      } catch (error) {
+        box.innerHTML = '<p class="auth-note">' + KS.escapeHtml(KS.friendlyError(error)) + '</p>';
+        return;
+      }
+
+      if (products.length === 0) {
+        box.innerHTML = '<div class="empty-box"><p>No shoes in the database yet.</p>' +
+                        '<p class="auth-note">Add one above, or press Load Catalogue to start with the twelve from products.js.</p></div>';
+        document.getElementById('stat-low').textContent = '0';
+        return;
+      }
+
+      box.innerHTML = products.map((product) => {
+        const sizes = Object.keys(product.stock).length ? Object.keys(product.stock) : KS_SIZES;
+        const boxes = sizes.map((label) => {
+          const left = product.stock[label];
+          const value = (left === undefined) ? 0 : left;
+          return '<div class="size-box' + (value <= LOW_STOCK ? ' low' : '') + '">' +
+                   '<label>' + KS.escapeHtml(label) + '</label>' +
+                   '<input type="number" min="0" max="999" value="' + value + '" data-size="' + KS.escapeHtml(label) + '">' +
+                 '</div>';
+        }).join('');
+
+        return '<div class="order stock-row" data-slug="' + KS.escapeHtml(product.slug) + '">' +
+                 '<div class="order-item" style="border:none;">' +
+                   '<img src="' + KS.escapeHtml(product.image) + '" alt="">' +
+                   '<div class="oi-name"><strong>' + KS.escapeHtml(product.name) + '</strong>' +
+                     '<small>' + KS.escapeHtml(product.brand) + ' | ' + KS.formatPeso(product.price) +
+                     ' | <a href="product.html?id=' + encodeURIComponent(product.slug) + '" target="_blank">view page</a></small></div>' +
+                   '<button type="button" class="link-btn edit-toggle">Edit</button>' +
+                 '</div>' +
+
+                 '<div class="edit-box" style="display:none;">' +
+                   '<div class="two-col">' +
+                     '<div><label>Name</label><input type="text" class="f-name" value="' + KS.escapeHtml(product.name) + '"></div>' +
+                     '<div><label>Brand</label><input type="text" class="f-brand" value="' + KS.escapeHtml(product.brand) + '"></div>' +
+                   '</div>' +
+                   '<label>Heading</label><input type="text" class="f-title" value="' + KS.escapeHtml(product.title) + '">' +
+                   '<div class="two-col">' +
+                     '<div><label>Price (₱)</label><input type="number" min="0" class="f-price" value="' + product.price + '"></div>' +
+                     '<div><label>Photo</label><input type="text" class="f-image" value="' + KS.escapeHtml(product.image) + '"></div>' +
+                   '</div>' +
+                   '<label>Product details</label>' +
+                   '<textarea rows="4" class="f-description">' + KS.escapeHtml(product.description) + '</textarea>' +
+                   '<div class="row-actions">' +
+                     '<button type="button" class="ks-btn save-shoe">Save Changes</button>' +
+                     '<button type="button" class="ks-btn danger delete-shoe">Delete Shoe</button>' +
+                   '</div>' +
+                 '</div>' +
+
+                 '<div class="size-grid">' + boxes + '</div>' +
+                 '<button type="button" class="ks-btn save-stock">Save Stock</button>' +
+                 '<span class="row-note"></span>' +
+               '</div>';
+      }).join('');
+
+      refreshLowStock();
+      wireShoeButtons();
+    }
+
+    // keeps the "low stock" boxes and the counter in step with the inputs
+    function refreshLowStock() {
+      let low = 0;
+      document.querySelectorAll('.size-box').forEach((box) => {
+        const value = parseInt(box.querySelector('input').value, 10) || 0;
+        const isLow = value <= LOW_STOCK;
+        box.classList.toggle('low', isLow);
+        if (isLow) low++;
+      });
+      document.getElementById('stat-low').textContent = low;
+    }
+
+    function wireShoeButtons() {
+      const box = document.getElementById('stock-list');
+
+      // show or hide the edit fields
+      box.querySelectorAll('.edit-toggle').forEach((button) => {
+        button.addEventListener('click', () => {
+          const panel = button.closest('.stock-row').querySelector('.edit-box');
+          const open = panel.style.display !== 'none';
+          panel.style.display = open ? 'none' : 'block';
+          button.textContent = open ? 'Edit' : 'Close';
+        });
+      });
+
+      // stock numbers
+      box.querySelectorAll('.save-stock').forEach((button) => {
+        button.addEventListener('click', async () => {
+          const row = button.closest('.stock-row');
+          const stock = {};
+          row.querySelectorAll('input[data-size]').forEach((input) => {
+            stock[input.dataset.size] = input.value;
+          });
+
+          button.disabled = true;
+          const note = row.querySelector('.row-note');
+          try {
+            await KS.saveStock(row.dataset.slug, stock);
+            note.textContent = 'Stock saved';
+            note.style.color = '#0f5132';
+            refreshLowStock();            // no redraw, so the note stays visible
+          } catch (error) {
+            note.textContent = KS.friendlyError(error);
+            note.style.color = 'crimson';
+          }
+          button.disabled = false;
+        });
+      });
+
+      // name, brand, price, photo, details
+      box.querySelectorAll('.save-shoe').forEach((button) => {
+        button.addEventListener('click', async () => {
+          const row = button.closest('.stock-row');
+          const note = row.querySelector('.row-note');
+          const name = row.querySelector('.f-name').value.trim();
+
+          if (!name) {
+            note.textContent = 'The shoe needs a name.';
+            note.style.color = 'crimson';
+            return;
+          }
+
+          button.disabled = true;
+          try {
+            await KS.updateProduct(row.dataset.slug, {
+              name: name,
+              title: row.querySelector('.f-title').value.trim() || name,
+              brand: row.querySelector('.f-brand').value.trim(),
+              price: row.querySelector('.f-price').value,
+              image: row.querySelector('.f-image').value.trim(),
+              description: row.querySelector('.f-description').value.trim()
+            });
+            loadShoes();
+          } catch (error) {
+            note.textContent = KS.friendlyError(error);
+            note.style.color = 'crimson';
+            button.disabled = false;
+          }
+        });
+      });
+
+      // delete: press once to arm it, press again to go through with it
+      box.querySelectorAll('.delete-shoe').forEach((button) => {
+        button.addEventListener('click', async () => {
+          const row = button.closest('.stock-row');
+
+          if (button.dataset.armed !== 'yes') {
+            button.dataset.armed = 'yes';
+            button.textContent = 'Tap again to delete';
+            setTimeout(() => {
+              button.dataset.armed = 'no';
+              button.textContent = 'Delete Shoe';
+            }, 5000);
+            return;
+          }
+
+          button.disabled = true;
+          button.textContent = 'Deleting...';
+          try {
+            await KS.deleteProduct(row.dataset.slug);
+            loadShoes();
+          } catch (error) {
+            const note = row.querySelector('.row-note');
+            note.textContent = KS.friendlyError(error);
+            note.style.color = 'crimson';
+            button.disabled = false;
+            button.textContent = 'Delete Shoe';
+          }
+        });
+      });
+    }
+
+    // ---------- add a shoe ----------
+    document.getElementById('add-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const button = document.getElementById('add-btn');
+      const name = document.getElementById('add-name').value.trim();
+      const price = document.getElementById('add-price').value;
+
+      if (!name) { showMessage('add-msg', 'Please give the shoe a name.', 'error'); return; }
+      if (!(Number(price) > 0)) { showMessage('add-msg', 'Please enter a price.', 'error'); return; }
+
+      button.disabled = true;
+      button.textContent = 'Adding...';
+      try {
+        const slug = await KS.addProduct({
+          name: name,
+          title: document.getElementById('add-title').value.trim() || name,
+          brand: document.getElementById('add-brand').value.trim(),
+          price: price,
+          image: document.getElementById('add-image').value.trim(),
+          description: document.getElementById('add-description').value.trim(),
+          order: 1                                  // new shoes show first
+        }, document.getElementById('add-stock').value);
+
+        e.target.reset();
+        document.getElementById('add-stock').value = 5;
+        showMessage('add-msg', name + ' is now in the shop: product.html?id=' + slug, 'success');
+        loadShoes();
+      } catch (error) {
+        showMessage('add-msg', KS.friendlyError(error), 'error');
+      }
+      button.disabled = false;
+      button.textContent = 'Add Shoe';
+    });
+
+    // ---------- fill the database from products.js ----------
+    document.getElementById('load-catalogue').addEventListener('click', async () => {
+      const button = document.getElementById('load-catalogue');
+      button.disabled = true;
+      button.textContent = 'Loading...';
+      try {
+        await KS.loadCatalogue(KS_PRODUCTS, KS_SIZES, KS_DEFAULT_STOCK);
+        showMessage('catalogue-msg', KS_PRODUCTS.length + ' shoes are in the database.', 'success');
+        loadShoes();
+      } catch (error) {
+        showMessage('catalogue-msg', KS.friendlyError(error), 'error');
+      }
+      button.disabled = false;
+      button.textContent = 'Load Catalogue';
+    });
+  </script>
+</body>
+</html>
